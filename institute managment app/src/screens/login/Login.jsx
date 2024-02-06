@@ -12,6 +12,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { loginUser, signUpUser } from '../../config/firebase/firebasemethod';
+import { useNavigate } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -31,14 +33,48 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+  const navigate = useNavigate()
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    if (data.get('email') === "") {
+      alert('Please Enter Email ')
+      return
+    }else if(data.get('password') === ""){
+      alert('Please Enter Password')
+      return
+    }
     console.log({
       email: data.get('email'),
       password: data.get('password'),
     });
-  };
+
+    // signupUser
+    // signUpUser({
+    //   email: data.get('email'),
+    //   password: data.get('password'),
+    //   type: 'student'
+    // }).then((res)=>{
+    //   console.log(res);
+    // }).catch((err)=>{
+    //   console.log(err);
+    // })
+
+    loginUser({
+      email: data.get('email'),
+      password: data.get('password'),
+    }).then((res) => {
+      console.log(res.type);
+      if (res.type === 'admin') {
+        navigate('/admin')
+      } else {
+        navigate('/student')
+      }
+    }).catch((err) => {
+      console.log(err);
+    })
+   
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>

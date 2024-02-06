@@ -18,6 +18,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import { useNavigate } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -66,7 +67,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-export default function PersistentDrawerLeft() {
+export default function PersistentDrawerLeft({screen}) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -77,6 +78,19 @@ export default function PersistentDrawerLeft() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const navigate = useNavigate()
+
+  const goToSpecificRoute = (text)=>{
+    if (text === 'Add Course') {
+      navigate('/admin/AddCourse')
+    }
+    if (text === 'All Course') {
+      navigate('/admin')
+    }
+    if (text === 'All Students') {
+      navigate('/admin/AllStudent')
+    }
+  }
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -93,7 +107,7 @@ export default function PersistentDrawerLeft() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Persistent drawer
+            Institute Management System
           </Typography>
         </Toolbar>
       </AppBar>
@@ -117,36 +131,22 @@ export default function PersistentDrawerLeft() {
         </DrawerHeader>
         <Divider />
         <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+          {['Add Course', 'All Course', 'All Students'].map((text, index) => (
             <ListItem key={text} disablePadding>
               <ListItemButton>
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={text} onClick={()=>goToSpecificRoute(text)}/>
               </ListItemButton>
             </ListItem>
           ))}
         </List>
         <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
       </Drawer>
       <Main open={open}>
         <DrawerHeader />
-        <Typography paragraph>
-            Hello World
-        </Typography>
+        {screen}
       </Main>
     </Box>
   );
